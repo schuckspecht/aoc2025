@@ -2,6 +2,7 @@ import { promises as fs } from "fs";
 
 async function main() {
   await solveDayOne();
+  await solveDayTwo();
 }
 
 async function solveDayOne() {
@@ -53,8 +54,59 @@ async function solveDayOne() {
     }
   }
 
-  console.log("Part 1 Solution:", passwordPart1);
-  console.log("Part 2 Solution:", passwordPart2);
+  console.log("Day 1 Part 1 Solution:", passwordPart1);
+  console.log("Day 1 Part 2 Solution:", passwordPart2);
+}
+
+async function solveDayTwo() {
+  const path = "input_d2.txt";
+  const text = await fs.readFile(path, "utf8");
+
+  const lines = text.replace(/\r?\n/g, "").split(",");
+
+  //Part 1
+  let totalPart1 = 0;
+  for (const line of lines) {
+    const ids = line.split("-").map((id) => Number(id));
+    for (let i = ids[0]; i <= ids[1]; i++) {
+      let string = i.toString();
+
+      const first = string.slice(0, string.length / 2);
+      const second = string.slice(string.length / 2, string.length);
+
+      if (first === second) {
+        totalPart1 += i;
+      }
+    }
+  }
+
+  let totalPart2 = 0;
+  let invalidIds: number[] = [];
+  for (const line of lines) {
+    const ids = line.split("-").map((id) => Number(id));
+    for (let i = ids[0]; i <= ids[1]; i++) {
+      const string = i.toString();
+      const length = string.length;
+      let chunks: string[] = [];
+      for (let size = 1; size <= length / 2; size++) {
+        for (let i = 0; i < string.length; i += size) {
+          chunks.push(string.substring(i, i + size));
+        }
+        const same = chunks.every((chunk) => chunk === chunks[0]);
+        if (same) {
+          const found = invalidIds.indexOf(i);
+
+          if (found === -1) {
+            invalidIds.push(i);
+            totalPart2 += i;
+          }
+        }
+        chunks = [];
+      }
+    }
+  }
+  console.log("Day 2 Part 1 Solution:", totalPart1);
+  console.log("Day 2 Part 2 Solution:", totalPart2);
 }
 
 main();
