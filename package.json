@@ -1,0 +1,31 @@
+{
+  "name": "aoc2025",
+  "version": "1.0.0",
+  "description": "",
+  "type": "module",
+  "homepage": "https://github.com/schuckspecht/aoc2025#readme",
+  "bugs": {
+    "url": "https://github.com/schuckspecht/aoc2025/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/schuckspecht/aoc2025.git"
+  },
+  "license": "ISC",
+  "author": "",
+  "main": "index.ts",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "npx tsx index.ts"
+  },
+  "dependencies": {
+    "fs": "^0.0.1-security",
+    "path": "^0.12.7",
+    "ts-node": "^10.9.2",
+    "url": "^0.11.4"
+  },
+  "devDependencies": {
+    "@types/node": "^25.0.0",
+    "tsx": "^4.21.0"
+  }
+}
