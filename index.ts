@@ -1,8 +1,10 @@
 import { promises as fs } from "fs";
 
 async function main() {
-  await solveDayOne();
-  await solveDayTwo();
+  // await solveDayOne();
+  // await solveDayTwo();
+  // await solveDayThree();
+  await solveDayFour();
 }
 
 async function solveDayOne() {
@@ -80,6 +82,7 @@ async function solveDayTwo() {
     }
   }
 
+  //Part 2
   let totalPart2 = 0;
   let invalidIds: number[] = [];
   for (const line of lines) {
@@ -107,6 +110,117 @@ async function solveDayTwo() {
   }
   console.log("Day 2 Part 1 Solution:", totalPart1);
   console.log("Day 2 Part 2 Solution:", totalPart2);
+}
+
+async function solveDayThree() {
+  const path = "input_d3.txt";
+  const text = await fs.readFile(path, "utf8");
+
+  const lines = text.replace(/\r/g, "").split("\n");
+
+  //Part 1
+  let totalPart1 = 0;
+  for (const line of lines) {
+    let highest = 0;
+
+    for (let i = 0; i < line.length - 1; i++) {
+      for (let y = 1; y < line.length; y++) {
+        const joltage = parseInt(line[i] + line[y]);
+
+        if (joltage > highest && i !== y && y > i) {
+          highest = joltage;
+        }
+      }
+    }
+    totalPart1 += highest;
+  }
+  console.log("Day 3 Part 1 Solution:", totalPart1);
+}
+
+async function solveDayFour() {
+  const path = "input_d4.txt";
+  const text = await fs.readFile(path, "utf8");
+
+  const lines = text.replace(/\r/g, "").split("\n");
+
+  //Part 1
+  let totalPart1 = pickRolls(lines, false, 0);
+  let totalPart2 = pickRolls(lines, true, 0);
+
+  console.log("Day 2 Part 1 Solution:", totalPart1);
+  console.log("Day 2 Part 2 Solution:", totalPart2);
+}
+
+function pickRolls(lines: string[], recursive: boolean, total: number) {
+  let rollPicked = false;
+  for (let i = 0; i < lines.length; i++) {
+    let row = lines[i];
+    const prevRow = lines[i - 1];
+    const nextRow = lines[i + 1];
+
+    let pickedRolls = 0;
+    for (let j = 0; j < row.length; j++) {
+      const char = row[j];
+      let rolls = 0;
+      if (char === "@") {
+        if (prevRow) {
+          if (prevRow[j - 1] && prevRow[j - 1] === "@") {
+            rolls++;
+          }
+
+          if (prevRow[j + 1] && prevRow[j + 1] === "@") {
+            rolls++;
+          }
+
+          if (prevRow[j] && prevRow[j] === "@") {
+            rolls++;
+          }
+        }
+
+        if (nextRow) {
+          if (nextRow[j - 1] && nextRow[j - 1] === "@") {
+            rolls++;
+          }
+
+          if (nextRow[j + 1] && nextRow[j + 1] === "@") {
+            rolls++;
+          }
+
+          if (nextRow[j] && nextRow[j] === "@") {
+            rolls++;
+          }
+        }
+
+        if (row[j - 1] && row[j - 1] === "@") {
+          rolls++;
+        }
+
+        if (row[j + 1] && row[j + 1] === "@") {
+          rolls++;
+        }
+
+        if (rolls < 4) {
+          pickedRolls++;
+
+          if (recursive) {
+            const chars = [...row];
+            chars[j] = "X";
+            const line = chars.join("");
+            lines[i] = line;
+            rollPicked = true;
+            row = line;
+          }
+        }
+      }
+    }
+    total += pickedRolls;
+  }
+
+  if (recursive && rollPicked) {
+    return pickRolls(lines, true, total);
+  }
+
+  return total;
 }
 
 main();
